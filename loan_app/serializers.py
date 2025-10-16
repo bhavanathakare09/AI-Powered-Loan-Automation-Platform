@@ -24,8 +24,9 @@ class LoanSerializer(serializers.ModelSerializer):
             "term_months",
             "start_date",
             "status",
-            "scheduled_monthly_payment",
-            "created_at",
+            "outstanding_principal",
+            "total_interest_paid",
+            "scheduled_monthly_payment",  
         ]
         read_only_fields = ["created_at"]
 
