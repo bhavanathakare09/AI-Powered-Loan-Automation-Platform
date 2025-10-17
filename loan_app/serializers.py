@@ -53,3 +53,12 @@ class PaymentSerializer(serializers.ModelSerializer):
         if value <= Decimal("0"):
             raise serializers.ValidationError("Payment amount must be positive.")
         return value
+customer_name = serializers.CharField(source="customer.full_name", read_only=True)
+
+class Meta:
+    model = Loan
+    fields = [
+        "id", "customer_name", "principal_amount", "status",
+        "outstanding_principal", "total_interest_paid",
+        "paid_off_date", "created_at"
+    ]

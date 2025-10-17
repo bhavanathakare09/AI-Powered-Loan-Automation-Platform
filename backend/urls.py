@@ -1,27 +1,44 @@
-"""
-URL configuration for backend project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# backend/urls.py
 
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+# ✅ Import views directly from loan_app
+from loan_app.views import (
+    CustomerViewSet,
+    LoanViewSet,
+    EscrowViewSet,
+    PaymentViewSet,
+    me,
+    ai_query,
+)
+
+from rest_framework.routers import DefaultRouter
+
+# Router for ViewSets
+router = DefaultRouter()
+router.register(r"customers", CustomerViewSet, basename="customer")
+router.register(r"loans", LoanViewSet, basename="loan")
+router.register(r"escrows", EscrowViewSet, basename="escrow")
+router.register(r"payments", PaymentViewSet, basename="payment")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("loan_app.urls")),
+
+    # 🔑 JWT Authentication
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+
+    # 👤 User profile
+    path("api/me/", me, name="me"),
+
+    # 🤖 AI Endpoint
+    path("api/ai/query/", ai_query, name="ai_query"),
+
+    # 🧭 API Router
+    path("api/", include(router.urls)),
 ]
